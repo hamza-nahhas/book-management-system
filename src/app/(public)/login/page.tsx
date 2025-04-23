@@ -27,7 +27,7 @@ export default function LoginPage() {
   const onSubmit = async (data: FormData) => {
     try {
       await login(data.email, data.password)
-      router.push('/admin') // ✅ Redirect to dashboard
+      router.push('/dashboard')
     } catch (err: any) {
       setSubmitError('Invalid email or password')
     }
