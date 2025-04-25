@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -15,7 +16,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export default function LoginPage() {
-  const { login, user, logout } = useAuth()
+  const { login, user } = useAuth()
   const router = useRouter()
   const [submitError, setSubmitError] = useState('')
   const {
@@ -27,6 +28,7 @@ export default function LoginPage() {
   const onSubmit = async (data: FormData) => {
     try {
       await login(data.email, data.password)
+      toast.success('Logged in successfully')
       router.push('/dashboard')
     } catch (err: any) {
       setSubmitError('Invalid email or password')

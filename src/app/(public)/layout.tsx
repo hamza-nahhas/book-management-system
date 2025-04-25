@@ -16,7 +16,7 @@ export default function PublicLayout({
     if (isLoggedIn) {
       router.replace('/dashboard')
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn, router])
 
   if (loading || isLoggedIn) {
     return <p className="mt-10 text-center">Checking authentication...</p>

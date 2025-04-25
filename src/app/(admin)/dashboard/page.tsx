@@ -1,13 +1,13 @@
 'use client'
 
-import BookCard from '@/components/bookCard'
 import BookFormDialog, { BookFormData } from '@/components/bookFormDialog'
 import ConfirmDialog from '@/components/ConfirmDialog'
-import { Button } from '@/components/ui/button'
+import { DashboardDataTable } from '@/components/dashboardDataTable'
 import { useAuth } from '@/hooks/useAuth'
 import { useBooks, useCreateBook, useDeleteBook, useUpdateBook } from '@/hooks/useBooks'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
+import { toast } from 'sonner'
 
 type Book = {
   id: string
@@ -35,6 +35,7 @@ const Dashboard: React.FC = () => {
     try {
       await logout()
       router.push('/')
+      toast('Logged out successfully', { richColors: true })
     } catch (err: any) {
       setSubmitError('Error logging out')
     }
@@ -42,6 +43,8 @@ const Dashboard: React.FC = () => {
 
   const handleCreate = useCallback(() => setDialogMode('create'), [])
   const handleEdit = useCallback((book: Book) => {
+    toast.success('Logged in successfully', { duration: 1500 })
+
     setDialogMode('edit')
     setSelectedBook(book)
   }, [])
@@ -105,7 +108,7 @@ const Dashboard: React.FC = () => {
         onDiscard={onCloseDialog}
       />
 
-      <div className="min-h-screen space-y-6 bg-[--background] p-6 text-[--foreground]">
+      <div className="min-h-screen space-y-6 p-6 px-20">
         <header className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">
             Welcome, {user?.displayName} <span className="text-sm opacity-70">({user?.email})</span>
@@ -115,23 +118,12 @@ const Dashboard: React.FC = () => {
           </button>
         </header>
 
-        <section>
-          <section className="flex items-center justify-between">
-            <h2 className="mb-4 text-xl font-semibold">Books</h2>
-            <Button size="sm" onClick={handleCreate}>
-              Create
-            </Button>
-          </section>
-          {(booksList ?? []).length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {(booksList ?? []).map((book) => (
-                <BookCard key={book.id} book={book} onDelete={handleDelete} onEdit={handleEdit} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-muted-foreground">No books available.</p>
-          )}
-        </section>
+        <DashboardDataTable
+          data={booksList ?? []}
+          handleCreate={handleCreate}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
       </div>
     </>
   )
