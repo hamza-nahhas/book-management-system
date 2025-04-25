@@ -11,7 +11,14 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.config({
-    extends: ['next/core-web-vitals', 'next/typescript', 'prettier']
+    extends: ['next/core-web-vitals', 'next/typescript', 'prettier'],
+    plugins: ['react-hooks'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'warn',
+      'react-hooks/exhaustive-deps': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn'
+    }
   })
 ]
 
