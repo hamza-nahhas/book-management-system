@@ -75,8 +75,8 @@ export function DashboardDataTable(props: Props) {
           <TableHeader>
             {isLoading ? (
               <TableRow className="h-10 w-1/4 animate-pulse bg-zinc-100">
-                {columns.map((column) => (
-                  <TableCell key={column.id} />
+                {columns.map((_, idx) => (
+                  <TableCell key={idx} />
                 ))}
               </TableRow>
             ) : (
@@ -101,8 +101,8 @@ export function DashboardDataTable(props: Props) {
                   key={idx}
                   className={`h-[49px] animate-pulse ${idx % 2 === 0 ? 'bg-zinc-50' : 'bg-yellow-50'}`}
                 >
-                  {columns.map((column) => (
-                    <TableCell key={column.id} />
+                  {columns.map((_, idx) => (
+                    <TableCell key={idx} />
                   ))}
                 </TableRow>
               ))

@@ -1,8 +1,8 @@
+import { Toaster } from '@/components/ui/sonner'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import Providers from './Providers'
-import { Toaster } from '@/components/ui/sonner'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -26,10 +26,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`overflow-y-scroll ${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>{children}</Providers>
-        <Toaster  />
-      </body>
+      <Providers>
+        <body className={`overflow-y-scroll ${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <nav className="fixed top-0 z-50 w-full bg-white shadow-md">
+            <div className="container mx-auto flex h-16 items-center justify-between px-4">
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold">Book Management System</h1>
+              </div>
+            </div>
+          </nav>
+
+          {children}
+          <Toaster />
+        </body>
+      </Providers>
     </html>
   )
 }

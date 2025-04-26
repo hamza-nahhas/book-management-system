@@ -64,8 +64,11 @@ export function useDeleteBook() {
   return useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/books/${id}`, { method: 'DELETE' })
+
       if (!res.ok) throw new Error('Failed to delete book. Please try again.')
-      return res.json()
+      if (res.status === 204) {
+        return
+      }
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['books'], exact: true })
   })

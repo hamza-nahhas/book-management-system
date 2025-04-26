@@ -1,11 +1,10 @@
 'use client'
 
-import BookFormDialog, { BookFormData } from '@/components/bookFormDialog'
+import BookFormDialog from '@/components/bookFormDialog'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import { DashboardDataTable } from '@/components/dashboardDataTable'
 import { useAuth } from '@/hooks/useAuth'
-import { useBooks, useCreateBook, useDeleteBook, useUpdateBook } from '@/hooks/useBooks'
-import { useRouter } from 'next/navigation'
+import { useBooks, useDeleteBook } from '@/hooks/useBooks'
 import React, { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -17,12 +16,9 @@ type Book = {
 }
 
 const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth()
-  const router = useRouter()
+  const { user } = useAuth()
 
   const { data: booksList, isLoading: isLoadingBooks, isError: isQueryError } = useBooks()
-  const { mutateAsync: createMutation, isError: isCreateError, isPending: isCreatePending } = useCreateBook()
-  const { mutateAsync: updateMutation, isError: isUpdateError, isPending: isUpdatePending } = useUpdateBook()
   const { mutateAsync: deleteMutation, isError: isDeleteErr, isPending: isDeletePending } = useDeleteBook()
 
   const [dialogMode, setDialogMode] = useState<'create' | 'edit' | 'delete' | null>(null)
@@ -45,45 +41,21 @@ const Dashboard: React.FC = () => {
 
   const onDeleteConfirm = useCallback(async () => {
     if (!selectedBook) return
-    await deleteMutation(selectedBook.id)
-    onCloseDialog()
+    try {
+      await deleteMutation(selectedBook.id)
+      onCloseDialog()
+      toast.success('Book deleted successfully!')
+    } catch (error: any) {
+      toast.error(error?.message || 'An error occurred. Please try again.')
+    }
   }, [deleteMutation, isDeleteErr, onCloseDialog, selectedBook])
-
-  const onFormSubmit = useCallback(
-    async (formData: BookFormData) => {
-      try {
-        if (dialogMode === 'edit' && selectedBook) {
-          await updateMutation({ ...formData, id: selectedBook.id })
-        } else {
-          await createMutation(formData)
-        }
-        onCloseDialog()
-        toast.success(dialogMode === 'edit' ? 'Book updated successfully!' : 'Book created successfully!')
-      } catch (error: any) {
-        toast.error(error?.message || 'An error occurred. Please try again.')
-      }
-    },
-    [createMutation, dialogMode, isCreateError, selectedBook, updateMutation]
-  )
 
   if (isQueryError) return <p>Failed to load books.</p>
 
   return (
     <>
-      <BookFormDialog
-        isOpen={dialogMode === 'create'}
-        onConfirm={onFormSubmit}
-        isError={isCreateError}
-        onClose={onCloseDialog}
-      />
-      <BookFormDialog
-        isOpen={dialogMode === 'edit'}
-        data={selectedBook}
-        mode="edit"
-        onConfirm={onFormSubmit}
-        isError={isUpdateError}
-        onClose={onCloseDialog}
-      />
+      <BookFormDialog isOpen={dialogMode === 'create'} onClose={onCloseDialog} />
+      <BookFormDialog isOpen={dialogMode === 'edit'} data={selectedBook} mode="edit" onClose={onCloseDialog} />
       <ConfirmDialog
         isOpen={dialogMode === 'delete'}
         title="Delete a book"

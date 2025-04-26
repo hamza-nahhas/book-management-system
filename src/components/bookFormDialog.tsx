@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
+import { useCreateBook, useUpdateBook } from '@/hooks/useBooks'
 import { Book } from '@/types/books'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useCallback, useEffect } from 'react'
@@ -22,8 +23,6 @@ type BookFormDialogProps = {
   isOpen: boolean
   mode?: 'edit' | 'create'
   data?: Book | null
-  isError: boolean
-  onConfirm: (formData: BookFormData) => Promise<void>
   onClose: () => void
 }
 
@@ -36,7 +35,10 @@ const bookSchema = z.object({
 export type BookFormData = z.infer<typeof bookSchema>
 const defaultValues: BookFormData = { title: '', author: '', description: '' }
 
-const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, onConfirm, onClose, isOpen }) => {
+const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, onClose, isOpen }) => {
+  const { mutateAsync: createMutation, isError: isCreateError, isPending: isCreatePending } = useCreateBook()
+  const { mutateAsync: updateMutation, isError: isUpdateError, isPending: isUpdatePending } = useUpdateBook()
+
   const methods = useForm<BookFormData>({
     resolver: zodResolver(bookSchema),
     defaultValues
@@ -49,15 +51,24 @@ const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, 
     methods.reset({ ...data })
   }, [])
 
-  const onSubmit = useCallback(async (formData: BookFormData) => {
-    try {
-      await onConfirm(formData)
-      onClose()
-      methods.reset(mode === 'edit' ? formData : defaultValues)
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred. Please try again.')
-    }
-  }, [])
+  const onFormSubmit = useCallback(
+    async (formData: BookFormData) => {
+      try {
+        if (mode === 'edit' && data) {
+          await updateMutation({ ...formData, id: data?.id })
+        } else {
+          await createMutation(formData)
+        }
+        toast.success(mode === 'edit' ? 'Book updated successfully!' : 'Book created successfully!')
+        methods.reset(mode === 'edit' ? formData : defaultValues)
+
+        onClose()
+      } catch (error: any) {
+        toast.error(error.message || 'An error occurred. Please try again.')
+      }
+    },
+    [createMutation, data, mode, onClose, updateMutation]
+  )
 
   const { errors } = methods.formState
 
@@ -72,7 +83,7 @@ const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, 
         </DialogHeader>
 
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={methods.handleSubmit(onFormSubmit)} className="space-y-4">
             <div>
               <Input placeholder="Title" {...methods.register('title')} />
               {errors.title && <p className="pt-1 text-sm text-red-500">{errors.title.message}</p>}

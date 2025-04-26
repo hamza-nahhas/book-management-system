@@ -23,8 +23,9 @@ interface ErrorResponse {
 type PutResponse = NextResponse<UpdateBookInput | ErrorResponse>
 type DeleteResponse = NextResponse<null | ErrorResponse>
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }): Promise<PutResponse> {
-  const id = params.id
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<PutResponse> {
+  const { id } = await params
+
   if (!id) {
     return NextResponse.json<ErrorResponse>({ error: 'Missing book ID' }, { status: 400 })
   }
@@ -55,8 +56,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }): Promise<DeleteResponse> {
-  const id = params.id
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<DeleteResponse> {
+  const { id } = await params
+
   if (!id) {
     return NextResponse.json<ErrorResponse>({ error: 'Missing book ID' }, { status: 400 })
   }
