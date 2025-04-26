@@ -28,17 +28,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="flex h-full min-h-screen w-full flex-col">
-      <nav>
-        <ul className="flex justify-center gap-4 py-4 text-lg font-semibold text-gray-700">
-          <li>
-            <a href="/">Home</a>
-          </li>
-          <li>
-            <a href="/login">Login</a>
-          </li>
-        </ul>
-      </nav>
-
       {children}
     </div>
   )
