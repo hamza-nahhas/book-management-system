@@ -10,6 +10,7 @@ import { useMemo, useState } from 'react'
 import DashboardTableHeader from './dashboardTableHeader'
 
 interface Props {
+  isLoading: boolean
   data: Book[]
   handleCreate: () => void
   handleEdit: (book: Book) => void
@@ -17,24 +18,15 @@ interface Props {
 }
 
 export function DashboardDataTable(props: Props) {
-  const { data, handleCreate, handleDelete, handleEdit } = props
+  const { data, handleCreate, handleDelete, handleEdit, isLoading } = props
 
   const [searchQuery, setSearchQuery] = useState('')
 
   const columns = useMemo<ColumnDef<Book>[]>(
     () => [
-      {
-        accessorKey: 'title',
-        header: 'Title'
-      },
-      {
-        accessorKey: 'author',
-        header: 'Author'
-      },
-      {
-        accessorKey: 'description',
-        header: 'Description'
-      },
+      { accessorKey: 'title', header: 'Title' },
+      { accessorKey: 'author', header: 'Author' },
+      { accessorKey: 'description', header: 'Description' },
       {
         id: 'actions',
         cell: ({ row }) => {
@@ -78,29 +70,45 @@ export function DashboardDataTable(props: Props) {
     <section>
       <DashboardTableHeader onCreateClick={handleCreate} onSearchChange={setSearchQuery} searchQuery={searchQuery} />
 
-      <div className="rounded-md border">
+      <div className="shadow-xs mb-2 overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  )
-                })}
+            {isLoading ? (
+              <TableRow className="h-10 w-1/4 animate-pulse bg-zinc-100">
+                {columns.map((column) => (
+                  <TableCell key={column.id} />
+                ))}
               </TableRow>
-            ))}
+            ) : (
+              table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              ))
+            )}
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, idx) => (
+            {isLoading ? (
+              Array.from({ length: 10 }).map((_, idx) => (
                 <TableRow
-                  key={row.id}
-                  className={(idx % 2 === 0 ? 'bg-white' : 'bg-yellow-50') + ' hover:bg-yellow-100'}
+                  key={idx}
+                  className={`h-[49px] animate-pulse ${idx % 2 === 0 ? 'bg-zinc-50' : 'bg-yellow-50'}`}
                 >
+                  {columns.map((column) => (
+                    <TableCell key={column.id} />
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row, idx) => (
+                <TableRow key={row.id} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-yellow-50'} hover:bg-yellow-100`}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}

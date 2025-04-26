@@ -66,7 +66,6 @@ const Dashboard: React.FC = () => {
     [createMutation, dialogMode, isCreateError, selectedBook, updateMutation]
   )
 
-  if (isLoadingBooks) return <p>Loading books...</p>
   if (isQueryError) return <p>Failed to load books.</p>
 
   return (
@@ -102,6 +101,7 @@ const Dashboard: React.FC = () => {
         </header>
 
         <DashboardDataTable
+          isLoading={isLoadingBooks}
           data={booksList ?? []}
           handleCreate={handleCreate}
           handleEdit={handleEdit}
