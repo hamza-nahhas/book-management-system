@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useBooks, useCreateBook, useDeleteBook, useUpdateBook } from '@/hooks/useBooks'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useState } from 'react'
+import { toast } from 'sonner'
 
 type Book = {
   id: string
@@ -23,8 +24,6 @@ const Dashboard: React.FC = () => {
   const { mutateAsync: createMutation, isError: isCreateError, isPending: isCreatePending } = useCreateBook()
   const { mutateAsync: updateMutation, isError: isUpdateError, isPending: isUpdatePending } = useUpdateBook()
   const { mutateAsync: deleteMutation, isError: isDeleteErr, isPending: isDeletePending } = useDeleteBook()
-
-  const [submitError, setSubmitError] = useState('Error logging out')
 
   const [dialogMode, setDialogMode] = useState<'create' | 'edit' | 'delete' | null>(null)
 
@@ -45,26 +44,24 @@ const Dashboard: React.FC = () => {
   }, [])
 
   const onDeleteConfirm = useCallback(async () => {
-    console.log('onDeleteConfirm', selectedBook)
     if (!selectedBook) return
     await deleteMutation(selectedBook.id)
-    if (isDeleteErr) {
-      setSubmitError('Failed to delete book')
-    }
     onCloseDialog()
   }, [deleteMutation, isDeleteErr, onCloseDialog, selectedBook])
 
   const onFormSubmit = useCallback(
     async (formData: BookFormData) => {
-      if (dialogMode === 'edit' && selectedBook) {
-        await updateMutation({ ...formData, id: selectedBook.id })
-      } else {
-        await createMutation(formData)
-        if (isCreateError) {
-          setSubmitError('Failed to create book')
+      try {
+        if (dialogMode === 'edit' && selectedBook) {
+          await updateMutation({ ...formData, id: selectedBook.id })
+        } else {
+          await createMutation(formData)
         }
+        onCloseDialog()
+        toast.success(dialogMode === 'edit' ? 'Book updated successfully!' : 'Book created successfully!')
+      } catch (error: any) {
+        toast.error(error?.message || 'An error occurred. Please try again.')
       }
-      onCloseDialog()
     },
     [createMutation, dialogMode, isCreateError, selectedBook, updateMutation]
   )
@@ -94,6 +91,7 @@ const Dashboard: React.FC = () => {
         description="Are you sure you want to delete this book?"
         onSubmit={onDeleteConfirm}
         onDiscard={onCloseDialog}
+        error="failed to delete the book, please try again."
       />
 
       <div className="mx-auto w-full max-w-[1320px] space-y-6 p-6 lg:px-12 xl:px-20">

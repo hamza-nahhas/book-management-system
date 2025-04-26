@@ -34,7 +34,7 @@ export function useCreateBook() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBook)
       })
-      if (!res.ok) throw new Error('Failed to create book')
+      if (!res.ok) throw new Error('Failed to create book. Please try again.')
       return res.json()
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['books'], exact: true })
@@ -51,7 +51,7 @@ export function useUpdateBook() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
       })
-      if (!res.ok) throw new Error('Failed to update book')
+      if (!res.ok) throw new Error('Failed to update book. Please try again.')
       return res.json()
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['books'], exact: true })
@@ -64,7 +64,7 @@ export function useDeleteBook() {
   return useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/books/${id}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Failed to delete book')
+      if (!res.ok) throw new Error('Failed to delete book. Please try again.')
       return res.json()
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['books'], exact: true })

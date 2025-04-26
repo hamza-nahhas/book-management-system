@@ -10,7 +10,7 @@ import { Button } from './ui/button'
 export function AdminSidebar() {
   const pathname = usePathname()
 
-  const { user, logout } = useAuth()
+  const { user, logout, authenticating } = useAuth()
   const router = useRouter()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -18,9 +18,13 @@ export function AdminSidebar() {
   const onOpenDialog = useCallback(() => setIsDialogOpen(true), [])
 
   const onLogout = useCallback(async () => {
-    await logout()
-    router.push('/')
-    toast('Logged out successfully', { richColors: true })
+    try {
+      await logout()
+      router.push('/')
+      toast.success('Logged out successfully', { richColors: true })
+    } catch (err: any) {
+      toast.error(err.message || 'Logout failed')
+    }
   }, [logout, router])
 
   return (
@@ -30,8 +34,11 @@ export function AdminSidebar() {
         title="Logout Confirmation"
         description="Are you sure you want to log out?"
         onSubmit={onLogout}
+        disabled={authenticating}
         onDiscard={onCloseDialog}
+        error="Failed to log out. Please try again."
       />
+      
       <div className="sticky top-0 flex h-screen max-w-[240px] flex-1 flex-shrink-0 flex-col border-r border-gray-200 bg-white xl:max-w-[320px]">
         <div className="flex h-16 items-center border-b border-gray-200 px-4">
           <h1 className="text-xl font-semibold text-gray-800">Admin Panel</h1>

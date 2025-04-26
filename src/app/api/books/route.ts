@@ -2,12 +2,12 @@ import { adminDB } from '@/firebase/admin'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
-    console.log('POST /api/books')
+  console.log('POST /api/books')
   try {
     const data = await req.json()
     const { title, author, description } = data
 
-    if (!title || !author || !description) {
+    if (!title || !author) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     }
 

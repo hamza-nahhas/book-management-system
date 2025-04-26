@@ -9,6 +9,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import React, { useCallback } from 'react'
+import { toast } from 'sonner'
 import { Button } from './ui/button'
 
 type BookCardProps = {
@@ -28,7 +29,8 @@ const ConfirmDialog: React.FC<BookCardProps> = ({
   isOpen,
   onSubmit,
   title,
-  description
+  description,
+  error
 }) => {
   const [loading, setLoading] = React.useState(false)
 
@@ -40,8 +42,12 @@ const ConfirmDialog: React.FC<BookCardProps> = ({
     async (e: React.FormEvent) => {
       e.preventDefault()
       setLoading(true)
-      await onSubmit()
-      setLoading(false)
+      try {
+        await onSubmit()
+        setLoading(false)
+      } catch (err) {
+        toast.error(error || 'An error occurred. Please try again.')
+      }
     },
     [onSubmit]
   )

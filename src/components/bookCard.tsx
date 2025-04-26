@@ -1,30 +1,32 @@
 import { Book } from '@/types/books'
-import React, { useCallback } from 'react'
-import { Button } from './ui/button'
+import { BookOpenText } from 'lucide-react'
+import React from 'react'
 
 type BookCardProps = {
   book: Book
-  onEdit: (book: Book) => void
-  onDelete: (book: Book) => void
+  color: string
 }
 
-const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onDelete }) => {
-  const handleEdit = useCallback(() => onEdit(book), [book, onEdit])
-  const handleDelete = useCallback(() => onDelete(book), [book, onDelete])
-
+const BookCard: React.FC<BookCardProps> = ({ book, color }) => {
   return (
-    <div className="max-w-sm space-y-4 rounded-lg bg-white p-4 shadow-lg">
-      <h2 className="text-xl font-semibold text-gray-900">{book.title}</h2>
-      <p className="text-gray-600">{book.author}</p>
-      <p className="primar text-sm text-gray-500">{book.description}</p>
+    <div
+      key={book.id}
+      className="group flex flex-col overflow-hidden rounded-xl border p-0 shadow-sm transition-shadow hover:shadow-md"
+    >
+      <div className="p-0">
+        <div className={`relative flex aspect-[3/2] w-full items-center justify-center bg-gradient-to-br ${color} p-4`}>
+          <BookOpenText className="" />
 
-      <div className="mt-4 flex space-x-2">
-        <Button variant="outline" size="sm" color="primary" onClick={handleEdit}>
-          Edit
-        </Button>
-        <Button variant="outline" size="sm" color="destructive" onClick={handleDelete}>
-          Delete
-        </Button>
+          <div className="absolute bottom-0 left-0 right-0 bg-black/30 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100">
+            <p className="line-clamp-1 font-medium">{book.title}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4">
+        <h3 className="line-clamp-1 font-semibold">{book.title}</h3>
+        <p className="text-muted-foreground text-sm">{book.author}</p>
+        <p className="text-muted-foreground mt-2 line-clamp-3 text-xs">{book.description}</p>
       </div>
     </div>
   )

@@ -10,8 +10,9 @@ import {
 } from '@/components/ui/dialog'
 import { Book } from '@/types/books'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -29,7 +30,7 @@ type BookFormDialogProps = {
 const bookSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   author: z.string().min(1, 'Author is required'),
-  description: z.string().min(1, 'Description is required')
+  description: z.string()
 })
 
 export type BookFormData = z.infer<typeof bookSchema>
@@ -43,21 +44,25 @@ const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, 
 
   useEffect(() => methods.reset(mode === 'edit' ? { ...data } : defaultValues), [data, methods, mode])
 
-  const onDiscard = () => {
+  const onDiscard = useCallback(() => {
     onClose()
     methods.reset({ ...data })
-  }
+  }, [])
 
-  const onSubmit = async (formData: BookFormData) => {
-    await onConfirm(formData)
-    methods.reset(mode === 'edit' ? formData : defaultValues)
-    onClose()
-  }
+  const onSubmit = useCallback(async (formData: BookFormData) => {
+    try {
+      await onConfirm(formData)
+      onClose()
+      methods.reset(mode === 'edit' ? formData : defaultValues)
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred. Please try again.')
+    }
+  }, [])
 
   const { errors } = methods.formState
 
   return (
-    <Dialog  open={isOpen} onOpenChange={onDiscard}>
+    <Dialog open={isOpen} onOpenChange={onDiscard}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{mode === 'edit' ? 'Edit Book' : 'Add New Book'}</DialogTitle>
@@ -80,7 +85,6 @@ const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, 
 
             <div>
               <Textarea maxLength={400} placeholder="Description" {...methods.register('description')} />
-              {errors.description && <p className="pt-1 text-sm text-red-500">{errors.description.message}</p>}
             </div>
 
             <DialogFooter className="flex justify-between">
@@ -88,8 +92,8 @@ const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, 
                 Cancel
               </Button>
 
-              <Button type="submit" disabled={methods.formState.isSubmitting}>
-                {mode === 'edit' ? 'Save' : 'Add'} {/* Dynamically change button text */}
+              <Button type="submit" className="w-24" disabled={methods.formState.isSubmitting}>
+                {mode === 'edit' ? 'Save' : 'Add'}
               </Button>
             </DialogFooter>
           </form>

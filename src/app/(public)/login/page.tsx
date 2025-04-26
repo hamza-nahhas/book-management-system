@@ -1,29 +1,32 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
 const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6)
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters')
 })
 
 type FormData = z.infer<typeof schema>
 
 export default function LoginPage() {
-  const { login, user } = useAuth()
+  const { login, authenticating } = useAuth()
   const router = useRouter()
-  const [submitError, setSubmitError] = useState('')
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm<FormData>({ resolver: zodResolver(schema) })
+  } = useForm<FormData>({
+    resolver: zodResolver(schema)
+  })
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -31,25 +34,36 @@ export default function LoginPage() {
       toast.success('Logged in successfully')
       router.push('/dashboard')
     } catch (err: any) {
-      setSubmitError('Invalid email or password')
+      toast.error(err.message || 'Login failed')
     }
   }
 
-  console.log(1, user)
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto mt-10 flex max-w-sm flex-col gap-4">
-      <input type="email" placeholder="Email" {...register('email')} className="border p-2" />
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+    <div className="flex flex-1 flex-col items-center justify-center px-4">
+      <div className="w-full max-w-md space-y-8 rounded-xl border p-8 shadow-sm transition-shadow hover:shadow-md">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+          <p className="text-muted-foreground text-sm">Enter your credentials to sign in</p>
+        </div>
 
-      <input type="password" placeholder="Password" {...register('password')} className="border p-2" />
-      {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" placeholder="your@email.com" {...register('email')} />
+            {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
+          </div>
 
-      <button type="submit" disabled={isSubmitting} className="bg-blue-500 p-2 text-white">
-        {isSubmitting ? 'Logging in...' : 'Login'}
-      </button>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" placeholder="••••••••" {...register('password')} />
+            {errors.password && <p className="text-destructive text-sm">{errors.password.message}</p>}
+          </div>
 
-      {submitError && <p className="text-red-500">{submitError}</p>}
-    </form>
+          <Button type="submit" loading={isSubmitting} className="w-full">
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
+          </Button>
+        </form>
+      </div>
+    </div>
   )
 }

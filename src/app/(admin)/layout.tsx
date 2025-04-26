@@ -15,14 +15,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [loading, isLoggedIn, router])
 
-  if (loading || !isLoggedIn) {
-    return <p className="mt-10 text-center">Checking authentication...</p>
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-lg font-semibold text-gray-700">Loading authentication...</p>
+      </div>
+    )
+  }
+
+  if (!isLoggedIn) {
+    return null
   }
 
   return (
     <div className="flex w-full">
-        <AdminSidebar />
-
+      <AdminSidebar />
       <div className="flex-1 overflow-y-auto">{children}</div>
     </div>
   )

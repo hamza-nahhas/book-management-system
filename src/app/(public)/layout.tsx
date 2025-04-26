@@ -4,23 +4,42 @@ import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-export default function PublicLayout({
-  children
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, loading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (!loading && isLoggedIn) {
       router.replace('/dashboard')
     }
-  }, [isLoggedIn, router])
+  }, [isLoggedIn, loading, router])
 
-  if (loading || isLoggedIn) {
-    return <p className="mt-10 text-center">Checking authentication...</p>
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-lg font-semibold text-gray-700">Loading...</p>
+      </div>
+    )
   }
 
-  return <>{children}</>
+  if (isLoggedIn) {
+    return null
+  }
+
+  return (
+    <div className="flex h-full min-h-screen w-full flex-col">
+      <nav>
+        <ul className="flex justify-center gap-4 py-4 text-lg font-semibold text-gray-700">
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/login">Login</a>
+          </li>
+        </ul>
+      </nav>
+
+      {children}
+    </div>
+  )
 }
