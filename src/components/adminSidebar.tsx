@@ -10,7 +10,7 @@ import { Button } from './ui/button'
 export function AdminSidebar() {
   const pathname = usePathname()
 
-  const { user, logout, authenticating } = useAuth()
+  const { logout, authenticating } = useAuth()
   const router = useRouter()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 

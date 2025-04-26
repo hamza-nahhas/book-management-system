@@ -52,7 +52,7 @@ export async function POST(req: Request): Promise<PostResponse> {
   }
 }
 
-export async function GET(_req: Request): Promise<GetResponse> {
+export async function GET(): Promise<GetResponse> {
   console.log('GET /api/books')
   try {
     const booksSnapshot = await adminDB.collection('books').get()

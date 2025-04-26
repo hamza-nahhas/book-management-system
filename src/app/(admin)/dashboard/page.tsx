@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth()
 
   const { data: booksList, isLoading: isLoadingBooks, isError: isQueryError } = useBooks()
-  const { mutateAsync: deleteMutation, isError: isDeleteErr, isPending: isDeletePending } = useDeleteBook()
+  const { mutateAsync: deleteMutation } = useDeleteBook()
 
   const [dialogMode, setDialogMode] = useState<'create' | 'edit' | 'delete' | null>(null)
 
@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
     } catch (error: any) {
       toast.error(error?.message || 'An error occurred. Please try again.')
     }
-  }, [deleteMutation, isDeleteErr, onCloseDialog, selectedBook])
+  }, [deleteMutation, onCloseDialog, selectedBook])
 
   if (isQueryError) return <p>Failed to load books.</p>
 

@@ -12,7 +12,7 @@ interface Props {
 const DashboardTableHeader: React.FC<Props> = ({ onCreateClick, onSearchChange, searchQuery }) => {
   const handleSearchInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onSearchChange(e.target.value)
-  }, [])
+  }, [onSearchChange])
   
   return (
     <div className="mb-4 flex items-center justify-between">

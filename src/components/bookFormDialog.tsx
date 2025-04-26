@@ -36,8 +36,8 @@ export type BookFormData = z.infer<typeof bookSchema>
 const defaultValues: BookFormData = { title: '', author: '', description: '' }
 
 const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, onClose, isOpen }) => {
-  const { mutateAsync: createMutation, isError: isCreateError, isPending: isCreatePending } = useCreateBook()
-  const { mutateAsync: updateMutation, isError: isUpdateError, isPending: isUpdatePending } = useUpdateBook()
+  const { mutateAsync: createMutation } = useCreateBook()
+  const { mutateAsync: updateMutation } = useUpdateBook()
 
   const methods = useForm<BookFormData>({
     resolver: zodResolver(bookSchema),
@@ -49,7 +49,7 @@ const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, 
   const onDiscard = useCallback(() => {
     onClose()
     methods.reset({ ...data })
-  }, [])
+  }, [data, methods, onClose])
 
   const onFormSubmit = useCallback(
     async (formData: BookFormData) => {
@@ -67,7 +67,7 @@ const BookFormDialog: React.FC<BookFormDialogProps> = ({ mode = 'create', data, 
         toast.error(error.message || 'An error occurred. Please try again.')
       }
     },
-    [createMutation, data, mode, onClose, updateMutation]
+    [createMutation, data, mode, onClose, updateMutation, methods]
   )
 
   const { errors } = methods.formState

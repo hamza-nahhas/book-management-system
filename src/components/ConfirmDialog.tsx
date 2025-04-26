@@ -45,11 +45,11 @@ const ConfirmDialog: React.FC<BookCardProps> = ({
       try {
         await onSubmit()
         setLoading(false)
-      } catch (err) {
-        toast.error(error || 'An error occurred. Please try again.')
+      } catch (err: any) {
+        toast.error(error || err || 'An error occurred. Please try again.')
       }
     },
-    [onSubmit]
+    [onSubmit, error]
   )
 
   return (
