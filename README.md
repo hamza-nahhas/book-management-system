@@ -74,8 +74,9 @@ password: password123
 
 - **Authentication**
 
-  - Email/password sign-in and sign-up using Firebase
-  - Protected routes (only authenticated users can manage books)
+  - Firebase Authentication for client-side sign-in (Email/Password).
+  - API routes protected via Bearer Token Authentication using Firebase ID Tokens (JWTs).
+  - Server-side verification performed with Firebase Admin SDK.
 
 - **Books Management**
 
