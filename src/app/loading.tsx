@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Loading() {
   return (
-    <div className="grid grid-cols-1 gap-6 px-8 py-16 sm:grid-cols-2 sm:px-16 lg:grid-cols-3 lg:px-24 xl:grid-cols-5 xl:px-40">
+    <div className="mt-16 grid grid-cols-1 gap-6 px-8 py-16 sm:grid-cols-2 sm:px-16 lg:grid-cols-3 lg:px-24 xl:grid-cols-5 xl:px-40">
       {Array.from({ length: 20 }).map((_, idx) => (
         <div key={idx}>
           <div className="flex flex-col overflow-hidden rounded-xl border p-0 shadow-sm">

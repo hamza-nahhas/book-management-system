@@ -20,6 +20,7 @@ type FormData = z.infer<typeof schema>
 export default function LoginPage() {
   const { login } = useAuth()
   const router = useRouter()
+  
   const {
     register,
     handleSubmit,

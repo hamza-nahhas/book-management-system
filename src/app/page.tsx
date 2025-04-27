@@ -60,7 +60,7 @@ export default async function BookListPageSSR() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 px-8 py-16 sm:grid-cols-2 sm:px-16 lg:grid-cols-3 lg:px-24 xl:grid-cols-5 xl:px-40">
+    <div className="mt-16 grid grid-cols-1 gap-6 px-8 py-16 sm:grid-cols-2 sm:px-16 lg:grid-cols-3 lg:px-24 xl:grid-cols-5 xl:px-40">
       {booksList.map((book, idx) => (
         <BookCard key={book.id} book={book} color={bookColors[idx % bookColors.length]} />
       ))}

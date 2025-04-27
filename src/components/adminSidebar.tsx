@@ -1,3 +1,5 @@
+'use client'
+
 import { useAuth } from '@/hooks/useAuth'
 import { Home, LayoutDashboard, LogOut } from 'lucide-react'
 import Link from 'next/link'
@@ -10,7 +12,7 @@ import { Button } from './ui/button'
 export function AdminSidebar() {
   const pathname = usePathname()
 
-  const { logout, authenticating } = useAuth()
+  const { logout, authenticating, isLoggedIn } = useAuth()
   const router = useRouter()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -27,6 +29,10 @@ export function AdminSidebar() {
     }
   }, [logout, router])
 
+  if (!isLoggedIn) {
+    return null
+  }
+
   return (
     <>
       <ConfirmDialog
@@ -38,7 +44,7 @@ export function AdminSidebar() {
         onDiscard={onCloseDialog}
         error="Failed to log out. Please try again."
       />
-      
+
       <div className="sticky top-0 flex h-screen max-w-[240px] flex-1 flex-shrink-0 flex-col border-r border-gray-200 bg-white xl:max-w-[320px]">
         <div className="flex h-16 items-center border-b border-gray-200 px-4">
           <h1 className="text-xl font-semibold text-gray-800">Admin Panel</h1>
@@ -57,11 +63,7 @@ export function AdminSidebar() {
           </Link>
 
           <Link href="/dashboard" className="">
-            <Button
-              className="flex h-12 w-full cursor-pointer justify-start"
-              size="lg"
-              variant={pathname === '/dashboard' ? 'default' : 'outline'}
-            >
+            <Button className="flex h-12 w-full cursor-pointer justify-start" size="lg" variant="outline">
               <LayoutDashboard className="mr-3 h-5 w-5" />
               <span>Dashboard</span>
             </Button>

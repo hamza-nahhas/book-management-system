@@ -31,7 +31,7 @@ export default function RootLayout({
         <body className={`overflow-y-scroll ${geistSans.variable} ${geistMono.variable} antialiased`}>
           <MainNavbar />
 
-          <div className="pt-16 h-[calc]">{children}</div>
+          {children}
           <Toaster />
         </body>
       </Providers>

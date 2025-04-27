@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
       <div className="mx-auto w-full max-w-[1320px] space-y-6 p-6 lg:px-12 xl:px-20">
         <header className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">
-            Welcome, {user?.displayName} <span className="text-sm opacity-70">({user?.email})</span>
+            Welcome, <span className="text-2xl opacity-70">({user?.email})</span>
           </h1>
         </header>
 
