@@ -70,7 +70,7 @@ export function DashboardDataTable(props: Props) {
     <section>
       <DashboardTableHeader onCreateClick={handleCreate} onSearchChange={setSearchQuery} searchQuery={searchQuery} />
 
-      <div className="shadow-xs mb-2 overflow-hidden rounded-md border">
+      <div className="shadow-sm mb-2 overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {isLoading ? (
@@ -81,7 +81,7 @@ export function DashboardDataTable(props: Props) {
               </TableRow>
             ) : (
               table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow key={headerGroup.id} className='bg-zinc-100 hover:bg-zinc-100'>
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead key={header.id}>

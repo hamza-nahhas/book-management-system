@@ -1,4 +1,5 @@
 import BookCard from '@/components/bookCard'
+import SubtlePattern from '@/components/ui/subtlePattern'
 import type { Book } from '@/types/books'
 
 const bookColors = [
@@ -60,7 +61,11 @@ export default async function BookListPageSSR() {
   }
 
   return (
-    <div className="mt-16 grid grid-cols-1 gap-6 px-8 py-16 sm:grid-cols-2 sm:px-16 lg:grid-cols-3 lg:px-24 xl:grid-cols-5 xl:px-40">
+    <div className="relative mt-16 grid grid-cols-1 gap-6 px-8 py-16 sm:grid-cols-2 sm:px-16 lg:grid-cols-3 lg:px-24 xl:grid-cols-5 xl:px-40">
+      <div className="absolute inset-0 -z-10 h-full w-full opacity-50">
+        <SubtlePattern />
+      </div>
+
       {booksList.map((book, idx) => (
         <BookCard key={book.id} book={book} color={bookColors[idx % bookColors.length]} />
       ))}

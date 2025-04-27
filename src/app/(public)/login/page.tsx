@@ -1,5 +1,6 @@
 'use client'
 
+import SubtlePattern from '@/components/ui/subtlePattern'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -20,7 +21,7 @@ type FormData = z.infer<typeof schema>
 export default function LoginPage() {
   const { login } = useAuth()
   const router = useRouter()
-  
+
   const {
     register,
     handleSubmit,
@@ -40,8 +41,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md space-y-8 rounded-xl border p-8 shadow-sm transition-shadow hover:shadow-md">
+    <div className="relative flex flex-1 flex-col items-center justify-center px-4">
+      <div className="absolute inset-0 -z-10 h-full w-full opacity-50">
+        <SubtlePattern />
+      </div>
+
+      <div className="bg-white w-full max-w-md space-y-8 rounded-xl border p-8 shadow-sm transition-shadow hover:shadow-md">
         <div className="text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
           <p className="text-muted-foreground text-sm">Enter your credentials to sign in</p>

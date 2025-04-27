@@ -11,7 +11,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, color }) => {
   return (
     <div
       key={book.id}
-      className="group flex flex-col overflow-hidden rounded-xl border p-0 shadow-sm transition-shadow hover:shadow-md"
+      className="group flex flex-col overflow-hidden rounded-xl border bg-white p-0 shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="p-0">
         <div className={`relative flex aspect-[3/2] w-full items-center justify-center bg-gradient-to-br ${color} p-4`}>
