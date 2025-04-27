@@ -55,13 +55,13 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="your@email.com" {...register('email')} />
+            <Input id="email" type="email" placeholder="admin@test.com" {...register('email')} />
             {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="••••••••" {...register('password')} />
+            <Input id="password" type="password" placeholder="password123" {...register('password')} />
             {errors.password && <p className="text-destructive text-sm">{errors.password.message}</p>}
           </div>
 
