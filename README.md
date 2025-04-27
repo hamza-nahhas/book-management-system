@@ -9,7 +9,7 @@
 
 **Live Demo**: [View here](https://book-management-system-vqxl.vercel.app/)
 
-A modern, responsive Book Management System built with:
+A simple book management system built with:
 
 - **Next.js** (App Router)
 - **Firebase** (Authentication + Firestore)
@@ -24,7 +24,7 @@ A modern, responsive Book Management System built with:
 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/your-username/book-management-system.git
+git clone https://github.com/hamza-nahhas/book-management-system.git
 cd book-management-system
 ```
 
@@ -40,7 +40,7 @@ yarn install
 
 3. **Setup Environment Variables**
 
-Create a `.env.local` file in the root directory and add your Firebase credentials:
+Create a `.env.local` file in the root directory and add your Firebase credentials (For both client and admin):
 
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
@@ -63,6 +63,11 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+5. **Test app with these credentials:**
+```
+email: admin@test.com
+password: password123
+```
 ---
 
 ## 📚 Features

@@ -47,7 +47,7 @@ export function AdminSidebar() {
 
       <div className="sticky top-0 flex h-screen max-w-[240px] flex-1 flex-shrink-0 flex-col border-r border-gray-200 bg-white shadow-md xl:max-w-[320px]">
         <div className="flex h-16 items-center border-b border-gray-200 px-4">
-          <h1 className="text-xl font-semibold text-gray-800">Admin Panel</h1>
+          <h1 className="text-xl px-4 font-semibold text-gray-800">Admin Panel</h1>
         </div>
 
         <nav className="flex flex-1 flex-col space-y-2 overflow-y-auto p-4">
