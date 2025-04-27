@@ -1,4 +1,5 @@
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
+import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
 
 console.log('Initializing Firebase Admin SDK...')
@@ -13,4 +14,7 @@ if (!getApps().length) {
   })
 }
 
-export const adminDB = getFirestore()
+const adminDB = getFirestore()
+const adminAuth = getAuth()
+
+export { adminAuth, adminDB }

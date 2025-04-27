@@ -1,4 +1,5 @@
 import { adminDB } from '@/firebase/admin'
+import { verifyAuth } from '@/firebase/server-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { z, ZodIssue } from 'zod'
 
@@ -24,8 +25,12 @@ type PutResponse = NextResponse<UpdateBookInput | ErrorResponse>
 type DeleteResponse = NextResponse<null | ErrorResponse>
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }): Promise<PutResponse> {
-  const { id } = await params
+  const authResult = await verifyAuth(req)
+  if ('error' in authResult) {
+    return NextResponse.json<ErrorResponse>({ error: authResult.error }, { status: authResult.status })
+  }
 
+  const { id } = await params
   if (!id) {
     return NextResponse.json<ErrorResponse>({ error: 'Missing book ID' }, { status: 400 })
   }
@@ -57,9 +62,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<DeleteResponse> {
+  const authResult = await verifyAuth(req)
+  if ('error' in authResult) {
+    return NextResponse.json<ErrorResponse>({ error: authResult.error }, { status: authResult.status })
+  }
+
   const { id } = await params
 
   if (!id) {

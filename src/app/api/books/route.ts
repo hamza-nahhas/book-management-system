@@ -1,6 +1,7 @@
 import { adminDB } from '@/firebase/admin'
+import { verifyAuth } from '@/firebase/server-auth'
 import { Book } from '@/types/books'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { z, ZodIssue } from 'zod'
 
 const CreateBookSchema = z.object({
@@ -21,9 +22,14 @@ interface ErrorResponse {
 }
 
 type PostResponse = NextResponse<CreatedBookResponse | ErrorResponse>
-type GetResponse = NextResponse<Book[] | ErrorResponse> // Success returns an array of Book
+type GetResponse = NextResponse<Book[] | ErrorResponse>
 
-export async function POST(req: Request): Promise<PostResponse> {
+export async function POST(req: NextRequest): Promise<PostResponse> {
+  const authResult = await verifyAuth(req)
+  if ('error' in authResult) {
+    return NextResponse.json<ErrorResponse>({ error: authResult.error }, { status: authResult.status })
+  }
+
   console.log('POST /api/books')
   try {
     const rawData = await req.json()
